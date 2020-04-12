@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: intranet-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: intranet-redis
+  template:
+    metadata:
+      labels:
+        app: intranet-redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:alpine
+        ports:
+        - containerPort: 6379

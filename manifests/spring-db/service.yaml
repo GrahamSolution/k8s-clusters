@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: intranet-spring-db-service
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+   - name: "db-port"
+     protocol: "TCP"
+     port: 3306
+     targetPort: 3306
+  selector:
+    app: intranet-spring-db-sfs

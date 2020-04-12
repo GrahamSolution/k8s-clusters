@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: 
+    intranet-spring-db-sfs
+spec:
+  serviceName: intranet-spring-db-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: intranet-spring-db-sfs
+  template:
+    metadata:
+      labels:
+        app: intranet-spring-db-sfs
+    spec:
+      containers:
+      - name: mysql
+        image: spring-db:mysql5.7
+        imagePullPolicy: Never
+        args:
+        - --character-set-server=utf8mb4
+        - --collation-server=utf8mb4_unicode_ci
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: intranet-secret
+              key: mysql_root_password
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: intranet-secret
+              key: mysql_username
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: intranet-secret
+              key: mysql_password
+        - name: TZ
+          value: "Asia/Tokyo"
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: pvc-spring-db-volume
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: pvc-spring-db-volume
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1G
